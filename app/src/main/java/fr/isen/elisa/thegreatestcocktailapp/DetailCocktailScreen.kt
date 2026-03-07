@@ -1,14 +1,28 @@
 package fr.isen.elisa.thegreatestcocktailapp
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +35,8 @@ import coil.compose.AsyncImage
 import fr.isen.elisa.thegreatestcocktailapp.data.FavoritesManager
 import fr.isen.elisa.thegreatestcocktailapp.model.Drink
 import fr.isen.elisa.thegreatestcocktailapp.network.RetrofitInstance
+import fr.isen.elisa.thegreatestcocktailapp.ui.theme.CreamCard
+import fr.isen.elisa.thegreatestcocktailapp.ui.theme.OrangeMain
 
 @Composable
 fun DetailCocktailScreen(idDrink: String) {
@@ -48,13 +64,12 @@ fun DetailCocktailScreen(idDrink: String) {
 
         else -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Cocktail not found")
+                Text("Cocktail introuvable")
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailCocktailContent(drink: Drink) {
     val context = LocalContext.current
@@ -62,86 +77,108 @@ fun DetailCocktailContent(drink: Drink) {
         mutableStateOf(FavoritesManager.isFavorite(context, drink.idDrink))
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Cocktail details") },
-                actions = {
-                    IconButton(onClick = {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AppHeader(title = "Détails du Cocktail")
+
+        MainCreamCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 18.dp)
+        ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                IconButton(
+                    onClick = {
                         FavoritesManager.toggleFavorite(context, drink.idDrink)
                         isFavorite = FavoritesManager.isFavorite(context, drink.idDrink)
                         Toast.makeText(
                             context,
-                            if (isFavorite) "Added to favorites" else "Removed from favorites",
+                            if (isFavorite) "Ajouté aux favoris" else "Retiré des favoris",
                             Toast.LENGTH_SHORT
                         ).show()
-                    }) {
-                        Icon(
-                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = "Favorite"
-                        )
-                    }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .clip(CircleShape)
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = OrangeMain
+                    )
                 }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
+            }
+
             AsyncImage(
                 model = drink.strDrinkThumb,
                 contentDescription = drink.strDrink,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                    .height(230.dp)
+                    .clip(RoundedCornerShape(24.dp)),
                 contentScale = ContentScale.Crop
             )
 
             Text(
                 text = drink.strDrink ?: "Unknown cocktail",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.primary
             )
 
             Text(
-                text = "Categories: ${drink.strCategory ?: "Unknown"}",
-                style = MaterialTheme.typography.bodyMedium
+                text = "Catégorie : ${drink.strCategory ?: "Unknown"}",
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
-                text = "Glass: ${drink.strGlass ?: "Unknown"}",
-                style = MaterialTheme.typography.bodyMedium
+                text = "Verre : ${drink.strGlass ?: "Unknown"}",
+                style = MaterialTheme.typography.bodyLarge
             )
 
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = CreamCard)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
                     Text(
-                        text = "Ingredients",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
+                        text = "Ingrédients",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     drink.ingredientsList().forEach {
-                        Text("• $it")
+                        Text("• $it", style = MaterialTheme.typography.bodyLarge)
                     }
                 }
             }
 
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = CreamCard)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
                     Text(
                         text = "Instructions",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(drink.strInstructions ?: "No instructions")
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = drink.strInstructions ?: "No instructions",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
             }
         }

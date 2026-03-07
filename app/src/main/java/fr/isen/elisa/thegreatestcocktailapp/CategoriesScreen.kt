@@ -1,14 +1,16 @@
 package fr.isen.elisa.thegreatestcocktailapp
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,23 +33,46 @@ fun CategoriesScreen(
         }
     }
 
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    } else {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(categories) { category ->
-                Card(
+    Column(modifier = Modifier.fillMaxSize()) {
+        AppHeader(title = "Catégories")
+
+        when {
+            isLoading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            else -> {
+                MainCreamCard(
                     modifier = Modifier
-                        .padding(8.dp)
                         .fillMaxWidth()
-                        .clickable { onCategoryClick(category) }
+                        .padding(horizontal = 20.dp, vertical = 18.dp)
                 ) {
                     Text(
-                        text = category,
-                        modifier = Modifier.padding(16.dp)
+                        text = "Catégories disponibles",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
                     )
+
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(categories) { category ->
+                            MainCreamCard(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onCategoryClick(category) },
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(14.dp)
+                            ) {
+                                Text(
+                                    text = category,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
