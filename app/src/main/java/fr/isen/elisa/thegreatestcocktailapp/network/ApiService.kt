@@ -6,7 +6,7 @@ import fr.isen.elisa.thegreatestcocktailapp.model.DrinkListResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface CocktailAPI {
+interface ApiService {
     @GET("random.php")
     suspend fun getRandomCocktail(): CocktailResponse
 

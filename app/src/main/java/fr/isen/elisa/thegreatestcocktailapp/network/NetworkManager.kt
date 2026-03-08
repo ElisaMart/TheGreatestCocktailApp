@@ -3,14 +3,14 @@ package fr.isen.elisa.thegreatestcocktailapp.network
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitInstance {
+object NetworkManager {
     private const val BASE_URL = "https://www.thecocktaildb.com/api/json/v1/1/"
 
-    val api: CocktailAPI by lazy {
+    val api: ApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(CocktailAPI::class.java)
+            .create(ApiService::class.java)
     }
 }
