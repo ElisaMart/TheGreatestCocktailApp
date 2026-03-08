@@ -119,7 +119,7 @@ fun DetailCocktailContent(drink: Drink) {
                 contentDescription = drink.strDrink,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(230.dp)
+                    .height(330.dp)
                     .clip(RoundedCornerShape(24.dp)),
                 contentScale = ContentScale.Crop
             )

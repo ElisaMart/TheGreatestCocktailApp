@@ -107,7 +107,7 @@ fun MainCreamCard(
         modifier = modifier,
         shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(containerColor = CreamCard.copy(alpha = 0.96f)),
-        border = androidx.compose.foundation.BorderStroke(2.dp, OrangeBorder.copy(alpha = 0.7f))
+        border = androidx.compose.foundation.BorderStroke(4.dp, OrangeBorder.copy(alpha = 0.7f))
     ) {
         Column(
             modifier = Modifier.padding(contentPadding),
