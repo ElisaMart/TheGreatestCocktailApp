@@ -16,7 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import fr.isen.elisa.thegreatestcocktailapp.network.RetrofitInstance
+import fr.isen.elisa.thegreatestcocktailapp.network.NetworkManager
 
 @Composable
 fun CategoriesScreen(
@@ -27,7 +27,7 @@ fun CategoriesScreen(
 
     LaunchedEffect(Unit) {
         try {
-            categories = RetrofitInstance.api.getCategories().drinks?.map { it.strCategory } ?: emptyList()
+            categories = NetworkManager.api.getCategories().drinks?.map { it.strCategory } ?: emptyList()
         } finally {
             isLoading = false
         }

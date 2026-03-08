@@ -1,6 +1,5 @@
 package fr.isen.elisa.thegreatestcocktailapp
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,12 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import fr.isen.elisa.thegreatestcocktailapp.data.FavoritesManager
 import fr.isen.elisa.thegreatestcocktailapp.model.Drink
-import fr.isen.elisa.thegreatestcocktailapp.network.RetrofitInstance
+import fr.isen.elisa.thegreatestcocktailapp.network.NetworkManager
 import fr.isen.elisa.thegreatestcocktailapp.ui.theme.CreamCard
 import fr.isen.elisa.thegreatestcocktailapp.ui.theme.OrangeMain
 
@@ -45,7 +43,7 @@ fun DetailCocktailScreen(idDrink: String) {
 
     LaunchedEffect(idDrink) {
         try {
-            drink = RetrofitInstance.api.getCocktailById(idDrink).drinks?.firstOrNull()
+            drink = NetworkManager.api.getCocktailById(idDrink).drinks?.firstOrNull()
         } finally {
             isLoading = false
         }
@@ -96,11 +94,6 @@ fun DetailCocktailContent(drink: Drink) {
                     onClick = {
                         FavoritesManager.toggleFavorite(context, drink.idDrink)
                         isFavorite = FavoritesManager.isFavorite(context, drink.idDrink)
-                        Toast.makeText(
-                            context,
-                            if (isFavorite) "Ajouté aux favoris" else "Retiré des favoris",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     },
                     modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -119,7 +112,7 @@ fun DetailCocktailContent(drink: Drink) {
                 contentDescription = drink.strDrink,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(330.dp)
+                    .height(230.dp)
                     .clip(RoundedCornerShape(24.dp)),
                 contentScale = ContentScale.Crop
             )

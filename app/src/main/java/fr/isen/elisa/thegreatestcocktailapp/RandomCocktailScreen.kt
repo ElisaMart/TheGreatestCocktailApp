@@ -7,7 +7,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import fr.isen.elisa.thegreatestcocktailapp.network.RetrofitInstance
+import fr.isen.elisa.thegreatestcocktailapp.network.NetworkManager
 
 @Composable
 fun RandomCocktailScreen() {
@@ -16,7 +16,7 @@ fun RandomCocktailScreen() {
 
     LaunchedEffect(Unit) {
         try {
-            idDrink = RetrofitInstance.api.getRandomCocktail().drinks?.firstOrNull()?.idDrink
+            idDrink = NetworkManager.api.getRandomCocktail().drinks?.firstOrNull()?.idDrink
         } finally {
             isLoading = false
         }

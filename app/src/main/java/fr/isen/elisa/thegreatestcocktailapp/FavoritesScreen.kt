@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import fr.isen.elisa.thegreatestcocktailapp.data.FavoritesManager
 import fr.isen.elisa.thegreatestcocktailapp.model.Drink
-import fr.isen.elisa.thegreatestcocktailapp.network.RetrofitInstance
+import fr.isen.elisa.thegreatestcocktailapp.network.NetworkManager
 
 @Composable
 fun FavoritesScreen(
@@ -36,7 +36,7 @@ fun FavoritesScreen(
 
         ids.forEach { id ->
             try {
-                val drink = RetrofitInstance.api.getCocktailById(id).drinks?.firstOrNull()
+                val drink = NetworkManager.api.getCocktailById(id).drinks?.firstOrNull()
                 if (drink != null) list.add(drink)
             } catch (_: Exception) {
             }

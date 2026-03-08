@@ -24,7 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import fr.isen.elisa.thegreatestcocktailapp.model.DrinkItem
-import fr.isen.elisa.thegreatestcocktailapp.network.RetrofitInstance
+import fr.isen.elisa.thegreatestcocktailapp.network.NetworkManager
 
 @Composable
 fun DrinksScreen(
@@ -36,7 +36,7 @@ fun DrinksScreen(
 
     LaunchedEffect(category) {
         try {
-            drinks = RetrofitInstance.api.getDrinksByCategory(category).drinks ?: emptyList()
+            drinks = NetworkManager.api.getDrinksByCategory(category).drinks ?: emptyList()
         } finally {
             isLoading = false
         }
