@@ -53,7 +53,8 @@ fun CocktailApp() {
                 NavigationBar(
                     containerColor = CreamCard.copy(alpha = 0.97f)
                 ) {
-                    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+                    val currentRoute =
+                        navController.currentBackStackEntryAsState().value?.destination?.route
 
                     bottomScreens.forEach { screen ->
                         NavigationBarItem(

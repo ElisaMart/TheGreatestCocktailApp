@@ -4,9 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,21 +29,36 @@ fun FavoritesScreen(
     val context = LocalContext.current
     var favoriteDrinks by remember { mutableStateOf(listOf<Drink>()) }
     var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
-        val ids = FavoritesManager.getFavorites(context)
-        val list = mutableListOf<Drink>()
+        isLoading = true
+        errorMessage = null
 
-        ids.forEach { id ->
-            try {
-                val drink = NetworkManager.api.getCocktailById(id).drinks?.firstOrNull()
-                if (drink != null) list.add(drink)
-            } catch (_: Exception) {
+        try {
+            val ids = FavoritesManager.getFavorites(context).toList()
+            val list = mutableListOf<Drink>()
+
+            ids.forEach { id ->
+                try {
+                    val drink = NetworkManager.api.getCocktailById(id).drinks?.firstOrNull()
+                    if (drink != null) {
+                        list.add(drink)
+                    }
+                } catch (_: Exception) {
+                }
             }
-        }
 
-        favoriteDrinks = list
-        isLoading = false
+            favoriteDrinks = list
+
+            if (ids.isEmpty()) {
+                errorMessage = "Aucun favori pour le moment"
+            }
+        } catch (e: Exception) {
+            errorMessage = "Erreur de chargement : ${e.message}"
+        } finally {
+            isLoading = false
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -51,18 +66,24 @@ fun FavoritesScreen(
 
         when {
             isLoading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator()
                 }
             }
 
             favoriteDrinks.isEmpty() -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
                     MainCreamCard(
                         modifier = Modifier.padding(horizontal = 20.dp)
                     ) {
                         Text(
-                            text = "Aucun favori pour le moment",
+                            text = errorMessage ?: "Aucun favori pour le moment",
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.primary
                         )
